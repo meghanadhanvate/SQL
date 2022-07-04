@@ -1,0 +1,445 @@
+                                                             CURSOR
+====================================================================================================================================================
+
+1)write a store function using cursor to display the details of member by accepting the member address.
+
+sy37=> create or replace function fcw(varchar) returns text as'
+ declare
+      ct alias for $1;
+      cw cursor for select mid,m_name from member where madd=ct;
+      w1 member.mid%type;
+      w2 member.m_name%type;
+      result text:='' '';
+ begin
+     result:=result||E''\n member in city ''||ct;
+     result:=result||E''\n mid m_name city'';
+     open cw;
+     loop
+        fetch cw into w1,w2;
+        exit when not found;
+        result:=result||E''\n ''||w1||'' ''||w2||'' ''||ct;
+     end loop;
+     close cw;
+ return result;
+ end;
+'language'plpgsql';
+
+CREATE FUNCTION
+
+sy37=> select fcw('mumbai');
+          fcw           
+------------------------
+                       +
+  member in city mumbai+
+  mid m_name city      +
+  53 rinku mumbai      +
+  58 soniya mumbai     +
+  59 monikaa mumbai
+(1 row)
+===================================================================================================================================================
+
+2)write a store function using cursor to accept the two amount from user and display the member details which have the amount between this range.
+
+create or replace function itm(int,int) returns text as'
+declare
+       r1 alias for $1;
+       r2 alias for $2;
+       c2 cursor for select paud,mid,status,amt
+                     from payment
+                     where amt between r1 and r2;
+       i1 payment.paud%type;
+       i2 payment.mid%type;
+       i3 payment.status%type;
+       i4 payment.amt%type;
+       result text :='' '';
+begin
+       result:=result||E''\n amount of member in this range ''||r1||'' and ''||r2;
+       result:=result||E''\n  paud mid status amt'';
+       open c2;
+       loop
+          fetch c2 into i1,i2,i3,i4;
+          exit when not found;
+          result:=result||E''\n ''||i1||'' ''||i2||'' ''||i3||'' ''||i4;
+       end loop;
+       close c2;
+return result;
+end;
+'language'plpgsql'; 
+
+CREATE FUNCTION
+
+sy37=> select itm(234,4567);
+
+                     itm                      
+----------------------------------------------
+                                             +
+  amount of member in this range 234 and 4567+
+   paud mid status amt                       +
+  111 51 paid 344                            +
+  112 52 not paid 344                        +
+  114 54 paid 3478                           +
+  115 55 paid 3342                           +
+  116 56 paid 3342                           +
+  117 57 not paid 334                        +
+  113 53 paid 3478                           +
+  121 52 paid 3324                           +
+  118 58 paid 354                            +
+  119 58 paid 354                            +
+  120 58 paid 3324
+(1 row)
+=================================================================================================================================================
+
+3)write a store function using cursor to accept name of member and display its allocated payment and member details.
+
+create or replace function detr(varchar) returns text as'
+declare
+      a1 alias for $1;
+      dc cursor for select member.mid,mbod,madd,gender,paud
+                   from member,payment
+                   where member.mid=payment.mid and m_name=a1;
+      b1 member.mid%type;
+      d1 member.mbod%type;
+      d2 member.madd%type;
+      b2 member.gender%Type;
+      b3 payment.paud%type;
+      result text:=''  '';
+begin
+      result=result||E''\n mid  bod            madd     gender    pid'';
+      open dc;
+      loop
+         fetch dc into b1,d1,d2,b2,b3;
+         exit when not found;
+         result=result||E''\n ''||b1||''   ''||d1||''   ''||d2||''        ''||b2||''      ''||b3;
+     end loop;
+     close dc;
+return result;
+end;
+'language'plpgsql';
+
+CREATE FUNCTION
+
+sy37=> select detr('meghana');
+
+                    detr                     
+---------------------------------------------
+                                            +
+  mid  bod            madd     gender    pid+
+  52   2006-05-05   nashik        m      112+
+  52   2006-05-05   nashik        m      121
+(1 row)
+
+
+=================================================================================================================================================
+
+4)write a store function using cursor batch id and display the allocated members details.
+
+create or replace function rout(int) returns text as'
+declare
+       a1 alias for $1;
+       rc cursor for select mid,m_name,madd,mbod
+                       from member m,batch1 b
+                       where m.bid=b.bid and b.bid=a1;
+       b1 member.mid%type;
+       b2 member.m_name%type;
+       b3 member.madd%type;
+       b4 member.mbod%type;
+       result text:='' '';
+begin
+      result=result||E''\n members of given batch ''||a1;
+      result=result||E''\n mid  mname      madd       mbod '';
+      open rc;
+      loop
+           fetch rc into b1,b2,b3,b4;
+           exit when not found;
+           result=result||E''\n ''||b1||''  ''|| b2||''    ''||b3||''    ''||b4;
+    end loop;
+    close rc;
+return result;
+end;
+'language'plpgsql';
+
+CREATE FUNCTION
+sy37=> select rout(35);
+             rout              
+-------------------------------
+                              +
+  members of given batch 35   +
+  mid mname madd mbod         +
+  57 soni kaa 2003-04-02      +
+  58 soniya mumbai 2006-04-02 +
+  59 monikaa mumbai 2006-04-06+
+  60 rani nashik 2003-04-02   +
+  61 rani nashik 2003-04-02   +
+  62 rani nashik 2003-02-02
+(1 row)
+===================================================================================================================================================
+
+5)write a store function using cursor to accept two date and display the member details which have the birth date in that range.
+
+create or replace function mem1(date,date) returns text as'
+declare
+       r1 alias for $1;
+       r2 alias for $2;
+       c2 cursor for select mid,m_name,mbod 
+                     from member
+                     where mbod between r1 and r2;
+       i1 member.mid%type;
+       i2 member.m_name%type;
+       i3 member.mbod%type;
+       result text :='' '';
+begin
+       result:=result||E''\n member birth date in this range ''||r1||'' and ''||r2;
+       result:=result||E''\n  mid mname bod'';
+       open c2;
+       loop
+          fetch c2 into i1,i2,i3;
+          exit when not found;
+          result:=result||E''\n ''||i1||'' ''||i2||'' ''||i3;
+       end loop;
+       close c2;
+return result;
+end;
+'language'plpgsql'; 
+
+CREATE FUNCTION
+
+sy37=>  select mem1('02-04-2001','06-07-2008');
+
+                            mem1                            
+------------------------------------------------------------
+                                                           +
+  member birth date in this range 2001-02-04 and 2008-06-07+
+   mid mname bod                                           +
+  52 meghana 2006-05-05                                    +
+  53 rinku 2007-02-03                                      +
+  56 soni 2004-01-02                                       +
+  57 soni 2003-04-02                                       +
+  58 soniya 2006-04-02                                     +
+  59 monikaa 2006-04-06                                    +
+  60 rani 2003-04-02                                       +
+  61 rani 2003-04-02                                       +
+  62 rani 2003-02-02                                       +
+  63 niki 2005-02-02                                       +
+  64 prikansi 2006-02-02                                   +
+  65 prikansi 2006-02-02                                   +
+  51 nikita 2001-05-04                                     +
+  66 prikansi 2006-02-02
+(1 row)
+
+
+=================================================================================================================================================
+
+6)write a store function using cursor to accept payment status and display the details of member which have the given status.
+
+create or replace function fun(varchar) returns text as'
+declare
+     ct alias for $1;
+     cw cursor for select payment.mid,m_name,status from payment,member where payment.mid=member.mid and status=ct;
+     w1 payment.mid%type;
+     w2 member.m_name%type;
+     result text:='' '';
+begin
+    result:=result||E''\n payemnt ''||ct;
+    result:=result||E''\n mid  m_name    status'';
+    open cw;
+    loop
+       fetch cw into w1,w2;
+       exit when not found;
+       result:=result||E''\n ''||w1||'' ''||w2||'' ''||ct;
+    end loop;
+    close cw;
+return result;
+end;
+'language'plpgsql';
+
+CREATE FUNCTION
+
+sy37=> select fun('paid');
+        fun         
+--------------------
+                   +
+  payemnt paid     +
+  mid m_name status+
+  52 meghana paid  +
+  53 rinku paid    +
+  54 monika paid   +
+  55 moni paid     +
+  56 soni paid     +
+  58 soniya paid   +
+  58 soniya paid   +
+  58 soniya paid   +
+  51 nikita paid
+(1 row)
+
+==============================================================================================================================================
+
+7) write a stored function to increase the payment amount for all payment by 2.In case the initial payment amount was less than 34678 then print a notice to the user before updating the amount.
+
+create or replace function can(int,int) returns text as'
+declare
+        r alias for $1;
+        am alias for $2;
+        c1 cursor for select paud,amt 
+                      from payment;
+        l1 payment.paud%type;
+        l2 payment.amt%type;
+begin
+         open c1;
+         loop
+                fetch  c1 into l1,l2;
+                exit when not found;
+                if l2<am then 
+                    raise notice E''\n payment amount % of lno % is less than %'', l2,l1,am;
+                end if;
+                    update payment
+                    set amt=amt+amt*(r/100.00)
+                    where paud=l1;
+          end loop;
+          close c1;
+return E''\n done'';
+end;
+'language'plpgsql';
+
+CREATE FUNCTION
+
+sy37=> select can(2,34678);
+NOTICE:  
+ payment amount 354 of lno 111 is less than 34678
+NOTICE:  
+ payment amount 354 of lno 112 is less than 34678
+NOTICE:  
+ payment amount 3583 of lno 114 is less than 34678
+NOTICE:  
+ payment amount 3443 of lno 115 is less than 34678
+NOTICE:  
+ payment amount 3443 of lno 116 is less than 34678
+NOTICE:  
+ payment amount 344 of lno 117 is less than 34678
+NOTICE:  
+ payment amount 3583 of lno 113 is less than 34678
+NOTICE:  
+ payment amount 3424 of lno 121 is less than 34678
+NOTICE:  
+ payment amount 365 of lno 118 is less than 34678
+NOTICE:  
+ payment amount 365 of lno 119 is less than 34678
+NOTICE:  
+ payment amount 3424 of lno 120 is less than 34678
+  can  
+-------
+      +
+  done
+(1 row)
+
+sy37=> select * from payment;
+ paud | mid |  status  | amt  | ram | pamt 
+------+-----+----------+------+-----+------
+  111 |  51 | paid     |  361 |   0 |  350
+  112 |  52 | not paid |  361 |  45 |  350
+  114 |  54 | paid     | 3655 |   0 | 3548
+  115 |  55 | paid     | 3512 |   0 | 3409
+  116 |  56 | paid     | 3512 |   0 | 3409
+  117 |  57 | not paid |  351 |  45 |  340
+  113 |  53 | paid     | 3655 | 345 | 3548
+  121 |  52 | paid     | 3492 |  35 | 3391
+  118 |  58 | paid     |  372 |  45 |  362
+  119 |  58 | paid     |  372 |  45 |  362
+  120 |  58 | paid     | 3492 |  45 | 3391
+(11 rows)
+===================================================================================================================================================
+
+8)write a store function using cursor to accept the diet report from table report and display the details of allocated member.
+
+ create or replace function ghm(varchar) returns text as'
+ declare
+      ct alias for $1;
+      cw cursor for select rid,member.mid,dreport from report1,member where member.mid=report1.mid and dreport=ct;
+      w1 report1.rid%type;
+      w2 member.mid%type;
+      result text:='' '';
+ begin
+     result:=result||E''\n details of member and report of given dreport ''||ct;
+     result:=result||E''\n rid mid dreport'';
+     open cw;
+     loop
+        fetch cw into w1,w2;
+        exit when not found;
+        result:=result||E''\n ''||w1||'' ''||w2||'' ''||ct;
+     end loop;
+     close cw;
+ return result;
+ end;
+'language'plpgsql';
+
+CREATE FUNCTION
+
+sy37=> select ghm('good');
+                         ghm                         
+-----------------------------------------------------
+                                                    +
+  details of member and report of given dreport good+
+  rid mid dreport                                   +
+  8 53 good                                         +
+  5 55 good
+(1 row)
+=====================================================================================================================================================
+9) write a store function using cursor to find the details of members which having trainer less than 30.
+
+create or replace function routin() returns text as'
+declare
+       rc cursor for select mid,m_name,madd,mbod,m.bid,tno
+                       from member m,batch1 b
+                       where m.bid=b.bid and tno<30;
+       b1 member.mid%type;
+       b2 member.m_name%type;
+       b3 member.madd%type;
+       b4 member.mbod%type;
+       b5 member.bid%type;
+       b6 batch1.tno%type;
+       result text:='' '';
+begin
+      result=result||E''\n members of given batch '';
+      result=result||E''\n mid  mname      madd       mbod  bid   tno '';
+      open rc;
+      loop
+           fetch rc into b1,b2,b3,b4,b5,b6;
+           exit when not found;
+           result=result||E''\n ''||b1||''  ''|| b2||''    ''||b3||''    ''||b4||'' ''||b5||'' ''||b6;
+    end loop;
+    close rc;
+return result;
+end;
+'language'plpgsql'; 
+
+CREATE FUNCTION
+
+sy37=> select routin();
+
+                    routin                    
+----------------------------------------------
+                                             +
+  members of given batch                     +
+  mid  mname      madd       mbod  bid   tno +
+  51  nikita    nashil    2001-05-04 31 23   +
+  56  soni    kara    2004-01-02 33 23       +
+  55  moni    karachi    2009-01-02 33 23    +
+  53  rinku    mumbai    2007-02-03 34 21    +
+  65  prikansi    up    2006-02-02 37 12     +
+  64  prikansi    up    2006-02-02 37 12     +
+  63  niki    pune    2005-02-02 37 12       +
+  54  monika    karachi    2009-01-03 37 12  +
+  66  prikansi    up    2006-02-02 43 18
+(1 row)
+
+===============================================================================================================================================
+
+
+
+
+
+
+
+
+
+
+

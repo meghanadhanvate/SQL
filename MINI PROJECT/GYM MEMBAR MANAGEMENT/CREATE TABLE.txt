@@ -1,0 +1,133 @@
+                                                            CREATE TABLE
+====================================================================================================================================================
+                                        
+
+1) create table plan(pid int ,duration int,discount int,status varchar(15));
+CREATE TABLE
+
+sy37=> \d plan;
+                        Table "public.plan"
+  Column  |         Type          | Collation | Nullable | Default 
+----------+-----------------------+-----------+----------+---------
+ pid      | integer               |           |          | 
+ duration | integer               |           |          | 
+ discount | integer               |           |          | 
+ status   | character varying(15) |           |          | 
+Triggers:
+    tx BEFORE INSERT OR UPDATE ON plan FOR EACH ROW EXECUTE PROCEDURE fplan()
+
+==================================================================================================================================================
+
+2) create table membership(msid int,mtype varchar,mstatus varchar(15),fee int);
+CREATE TABLE
+
+sy37=> \d membership;
+                    Table "public.membership"
+ Column  |         Type          | Collation | Nullable | Default 
+---------+-----------------------+-----------+----------+---------
+ msid    | integer               |           |          | 
+ mtype   | character varying     |           |          | 
+ mstatus | character varying(15) |           |          | 
+ fee     | integer               |           |          | 
+Triggers:
+    tms BEFORE INSERT OR UPDATE ON membership FOR EACH ROW EXECUTE PROCEDURE fms()
+
+=====================================================================================================================================================
+
+3) create table diet(did int,d_name varchar(10),duration int);
+CREATE TABLE
+
+sy37=> \d diet;
+                        Table "public.diet"
+  Column  |         Type          | Collation | Nullable | Default 
+----------+-----------------------+-----------+----------+---------
+ did      | integer               |           |          | 
+ d_name   | character varying(10) |           |          | 
+ duration | integer               |           |          | 
+Triggers:
+    tdiet BEFORE INSERT ON diet FOR EACH ROW EXECUTE PROCEDURE fdiet()
+
+
+====================================================================================================================================================
+
+4) create table batch1(bid int,shift varchar(10)tno int);
+CREATE TABLE
+
+sy37=> \d batch1;
+                      Table "public.batch1"
+ Column |         Type          | Collation | Nullable | Default 
+--------+-----------------------+-----------+----------+---------
+ bid    | integer               |           |          | 
+ shift  | character varying(10) |           |          | 
+ tno    | integer               |           |          | 
+Triggers:
+    tf BEFORE INSERT ON batch1 FOR EACH ROW EXECUTE PROCEDURE fbat()
+
+================================================================================================================================================
+
+5)create table member(mid int,m_name varchar(15),mbod date,madd varchar(10),gender varchar(10),mjd date,pid int,msid int,did int,bid int);
+CREATE TABLE
+
+sy37=> \d member;
+                      Table "public.member"
+ Column |         Type          | Collation | Nullable | Default 
+--------+-----------------------+-----------+----------+---------
+ mid    | integer               |           |          | 
+ m_name | character varying(15) |           |          | 
+ mbod   | date                  |           |          | 
+ madd   | character varying(10) |           |          | 
+ gender | character varying(10) |           |          | 
+ mjd    | date                  |           |          | 
+ pid    | integer               |           |          | 
+ msid   | integer               |           |          | 
+ did    | integer               |           |          | 
+ bid    | integer               |           |          | 
+Triggers:
+    t1 BEFORE INSERT OR UPDATE ON member FOR EACH ROW EXECUTE PROCEDURE fmem()
+    tz BEFORE INSERT OR UPDATE ON member FOR EACH ROW EXECUTE PROCEDURE fmem()
+
+
+
+====================================================================================================================================================
+
+6) create table report1(rid int,mid int,sreport varchar(10),dreport varchar(20),areport varchar(10));
+CREATE TABLE
+
+sy37=> \d report1;
+
+                      Table "public.report1"
+ Column  |         Type          | Collation | Nullable | Default 
+---------+-----------------------+-----------+----------+---------
+ rid     | integer               |           |          | 
+ mid     | integer               |           |          | 
+ sreport | character varying(10) |           |          | 
+ dreport | character varying(20) |           |          | 
+ areport | character varying(10) |           |          | 
+Triggers:
+    treport BEFORE INSERT ON report1 FOR EACH ROW EXECUTE PROCEDURE freport()
+
+
+======================================================================================================================================================
+
+7)
+sy37=>create table payment(paud int,mid int,status varchar(10),amt int,ram int,pamt int);
+CREATE TABLE
+
+sy37=> \d payment;
+                     Table "public.payment"
+ Column |         Type          | Collation | Nullable | Default 
+--------+-----------------------+-----------+----------+---------
+ paud   | integer               |           |          | 
+ mid    | integer               |           |          | 
+ status | character varying(10) |           |          | 
+ amt    | integer               |           |          | 
+ ram    | integer               |           |          | 
+ pamt   | integer               |           |          | 
+Triggers:
+    tpay BEFORE INSERT OR UPDATE ON payment FOR EACH ROW EXECUTE PROCEDURE fpay()
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+

@@ -1,0 +1,734 @@
+                                                          TRIGGERS.
+================================================================================================================================================
+
+1)PLAN:-
+Question:-Write a trigger insert or update to handle constriant on table plan.
+
+sy37=>  create trigger tx
+sy37-> before insert or update
+sy37-> on plan
+sy37-> for each row
+sy37-> execute procedure fplan();
+CREATE TRIGGER
+
+ create or replace function  fplan() returns trigger as'
+begin
+if(new.pid<=0 and new.pid IS NULL) then
+  raise exception E''\n invalid pid'';
+ end if;
+  if TG_OP=''INSERT'' THEN
+ perform * 
+  from plan
+    where pid=new.pid;
+       if found then
+          raise exception E''\n duplicate pid'';
+       end if;
+if(new.duration<=0) then 
+raise exception E''\n invcalid duration'';
+end if;
+  if(new.discount<=0) then 
+   raise exception E''\n invalid discount'';
+  end if;
+  if(new.status not in(''yes'',''no'')) then
+    raise exception E''\n invalid status'';
+  end if;
+ end if;
+ if TG_OP=''UPDATE'' THEN
+    if(new.duration<=0) then 
+raise exception E''\n invcalid duration'';
+end if;
+  if(new.discount<=0) then 
+   raise exception E''\n invalid discount'';
+  end if;
+  if(new.status not in(''yes'',''no'')) then
+    raise exception E''\n invalid status'';
+  end if;
+end if;
+   return new;
+  end;
+'language 'plpgsql';
+
+CREATE FUNCTION
+
+sy37=> insert into plan values(1,34,45,'yes');
+INSERT 0 1
+sy37=> insert into plan values(2,31,44,'no');
+INSERT 0 1
+sy37=> insert into plan values(3,36,44,'yes');
+INSERT 0 1
+sy37=> insert into plan values(4,37,44,'yes');
+INSERT 0 1
+sy37=> insert into plan values(5,37,74,'yes');
+INSERT 0 1
+sy37=> insert into plan values(5,37,74,'no');
+ERROR:  
+ duplicate pid
+CONTEXT:  PL/pgSQL function fplan() line 11 at RAISE
+sy37=> insert into plan values(6,37,74,'no');
+INSERT 0 1
+sy37=> insert into plan values(7,36,24,'no');
+INSERT 0 1
+sy37=> insert into plan values(8,26,28,'yes');
+INSERT 0 1
+sy37=> insert into plan values(9,32,74,'no');
+INSERT 0 1
+sy37=> insert into plan values(10,37,74,'yes');
+INSERT 0 1
+sy37=> insert into plan values(11,37,74,'yes');
+INSERT 0 1
+sy37=> insert into plan values(12,34,73,'no');
+INSERT 0 1
+sy37=> insert into plan values(13,32,72,'yes');
+INSERT 0 1
+sy37=> insert into plan values(14,22,73,'yes');
+INSERT 0 1
+sy37=> insert into plan values(15,23,77,'no');
+INSERT 0 1
+sy37=> insert into plan values(16,23,77,'no');
+INSERT 0 1
+sy37=> insert into plan values(17,23,77,'yes');
+INSERT 0 1
+sy37=> insert into plan values(18,23,77,'no');
+INSERT 0 1
+sy37=> insert into plan values(19,23,78,'yes');
+INSERT 0 1
+sy37=> insert into plan values(20,23,78,'yes');
+INSERT 0 1
+
+sy37=> select * from plan;
+
+ pid | duration | discount | status 
+-----+----------+----------+--------
+   1 |       34 |       45 | yes
+   2 |       31 |       44 | no
+   3 |       36 |       44 | yes
+   4 |       37 |       44 | yes
+   5 |       37 |       74 | yes
+   6 |       37 |       74 | no
+   7 |       36 |       24 | no
+   8 |       26 |       28 | yes
+   9 |       32 |       74 | no
+  10 |       37 |       74 | yes
+  11 |       37 |       74 | yes
+  12 |       34 |       73 | no
+  13 |       32 |       72 | yes
+  14 |       22 |       73 | yes
+  15 |       23 |       77 | no
+  16 |       23 |       77 | no
+  17 |       23 |       77 | yes
+  18 |       23 |       77 | no
+  19 |       23 |       78 | yes
+  20 |       23 |       78 | yes
+(20 rows)
+
+======================================================================================================================================================
+
+2)MEMBERSHIP:-
+Question:-Write a trigger insert or update to handle constriant on table membership.
+
+sy37=> create trigger tms
+sy37-> before insert or update
+sy37-> on membership
+sy37-> for each row
+sy37-> execute procedure fms();
+CREATE TRIGGER
+
+create or replace function fms() returns trigger as'
+begin
+  if TG_OP=''INSERT'' THEN
+if(new.msid<=0) then
+  raise exception E''\n invalid msid'';
+end if;
+perform *
+from membership
+where msid=new.msid;
+if found then 
+raise exception E''\n invalid  msid'';
+end if;
+if(new.mstatus not in(''full'',''available'')) then
+ raise exception E''\n invalid status'';
+end if;
+if(new.fee<=0) then 
+raise exception E''\n invalid fee'';
+end if;
+end if;
+if TG_OP=''UPDATE'' THEN
+if(new.mstatus not in(''full'',''available'')) then
+ raise exception E''\n invalid status'';
+end if;
+if(new.fee<=0) then 
+raise exception E''\n invalid fee'';
+end if;
+end if;
+return new;
+end;
+'language 'plpgsql';
+
+CREATE FUNCTION
+
+sy37=> insert into membership values(41,'golden','full',5876);
+INSERT 0 1
+sy37=> insert into membership values(42,'golden','available',5453);
+INSERT 0 1
+sy37=> insert into membership values(43,'silver','available',5633);
+INSERT 0 1
+sy37=> insert into membership values(44,'golden','available',56773);
+INSERT 0 1
+sy37=> insert into membership values(45,'silver','available',5673);
+INSERT 0 1
+sy37=> insert into membership values(46,'silver','full',4543);
+INSERT 0 1
+sy37=> insert into membership values(47,'silver','full',445);
+INSERT 0 1
+sy37=> insert into membership values(48,'golden','full',44578);
+INSERT 0 1
+sy37=> insert into membership values(49,'golden','full',44578);
+INSERT 0 1
+sy37=> insert into membership values(50,'golden','available',4578);
+INSERT 0 1
+sy37=> insert into membership values(51,'silver','available',4578);
+INSERT 0 1
+sy37=> insert into membership values(52,'silver','full',4578);
+INSERT 0 1
+sy37=> insert into membership values(53,'silver','full',45778);
+INSERT 0 1
+sy37=> insert into membership values(54,'gold','full',778);
+INSERT 0 1
+sy37=> insert into membership values(55,'gold','available',78778);
+INSERT 0 1
+
+sy37=> select * from membership;
+
+ msid | mtype  |  mstatus  |  fee  
+------+--------+-----------+-------
+   41 | golden | full      |  5876
+   42 | golden | available |  5453
+   43 | silver | available |  5633
+   44 | golden | available | 56773
+   45 | silver | available |  5673
+   46 | silver | full      |  4543
+   47 | silver | full      |   445
+   48 | golden | full      | 44578
+   49 | golden | full      | 44578
+   50 | golden | available |  4578
+   51 | silver | available |  4578
+   52 | silver | full      |  4578
+   53 | silver | full      | 45778
+   54 | gold   | full      |   778
+   55 | gold   | available | 78778
+(15 rows)
+======================================================================================================================================================
+
+3)DIET:-
+Question:-Write a trigger insert or update to handle constriant on table diet.
+
+create trigger tdiet
+ before insert
+ on diet
+for each row
+ execute procedure fdiet();
+CREATE TRIGGER
+
+create or replace function fdiet() returns trigger as'
+begin
+  if TG_OP=''INSERT'' THEN
+if(new.did<=0) then
+  raise exception E''\n invalid did'';
+end if;
+perform *
+from diet
+where did=new.did;
+if found then 
+raise exception E''\n invalid  did'';
+end if;
+if (new.d_name IS NULL) then
+ raise exception E''\n invalid dname'';
+end if;
+if(new.duration<=0) then 
+raise exception E''\n invalid duration'';
+end if;
+end if;
+return new;
+end;
+'language 'plpgsql';
+
+sy37=> insert into diet values(01,'wgain',76);
+INSERT 0 1
+sy37=> insert into diet values(02,'hdfj',36);
+INSERT 0 1
+sy37=> insert into diet values(03,'jnbdf',345);
+INSERT 0 1
+sy37=> insert into diet values(04,'gain',34);
+INSERT 0 1
+sy37=> insert into diet values(05,'loss',334);
+INSERT 0 1
+sy37=> insert into diet values(06,'loss',334);
+INSERT 0 1
+sy37=> insert into diet values(07,'shape',37);
+INSERT 0 1
+sy37=> insert into diet values(08,'shape',37);
+INSERT 0 1
+sy37=> insert into diet values(09,'loss',38);
+INSERT 0 1
+sy37=> insert into diet values(10,'loss',2);
+INSERT 0 1
+sy37=> insert into diet values(11,'loss',23);
+INSERT 0 1
+sy37=> insert into diet values(12,'gain',23);
+INSERT 0 1
+sy37=> insert into diet values(13,'gain',43);
+INSERT 0 1
+sy37=> insert into diet values(14,'loss',42);
+INSERT 0 1
+sy37=> insert into diet values(15,'loss',41);
+INSERT 0 1
+
+sy37=> select * from diet;
+ did | d_name | duration 
+-----+--------+----------
+   4 | gain   |       34
+   5 | loss   |      334
+   6 | loss   |      334
+   7 | shape  |       37
+   8 | shape  |       37
+   9 | loss   |       38
+  10 | loss   |        2
+  11 | loss   |       23
+  12 | gain   |       23
+  13 | gain   |       43
+  14 | loss   |       42
+  15 | loss   |       41
+   1 | loss   |       76
+   2 | shape  |       36
+   3 | shape  |      345
+(15 rows)
+
+======================================================================================================================================================
+
+4)BATCH:-
+
+Question:-Write a trigger insert or update to handle constriant on table batch.
+
+sy37=> create trigger tat
+ before insert or update
+ on payment
+ for each row
+ execute procedure fbat();
+CREATE TRIGGER
+
+create or replace function fbat() returns trigger as'
+begin
+  if TG_OP=''INSERT'' THEN
+if(new.bid<=0) then
+  raise exception E''\n invalid did'';
+end if;
+perform *
+from batch1
+where bid=new.bid;
+if found then 
+raise exception E''\n invalid  did'';
+end if;
+if (new.shift not in(''M'',''E'')) then 
+raise exception E''\n invalid shift'';
+end if;
+if(new.tno<=0) then 
+raise exception E''\n invalid tno'';
+end if;
+end if;
+if TG_OP=''UPDATE'' THEN 
+if(new.shift not in(''M'',''E'')) then 
+raise exception E''\n invalid shift'';
+end if;
+if(new.tno<=0) then 
+raise exception E''\n invalid tno'';
+end if;
+end if;
+return new;
+end;
+'language 'plpgsql';
+CREATE FUNCTION
+
+sy37=> insert into batch1 values(31,'M',23);
+INSERT 0 1
+sy37=> insert into batch1 values(32,'F',63);
+ERROR:  
+ invalid shift
+CONTEXT:  PL/pgSQL function fbat() line 14 at RAISE
+sy37=> insert into batch1 values(32,'E',63);
+INSERT 0 1
+sy37=> insert into batch1 values(33,'E',23);
+INSERT 0 1
+sy37=> insert into batch1 values(34,'E',21);
+INSERT 0 1
+sy37=> insert into batch1 values(35,'M',61);
+INSERT 0 1
+sy37=> insert into batch1 values(36,'M',62);
+INSERT 0 1
+sy37=> insert into batch1 values(37,'M',12);
+INSERT 0 1
+sy37=>  insert into batch1 values(38,'M',22);
+INSERT 0 1
+sy37=>  insert into batch1 values(39,'E',22);
+INSERT 0 1
+sy37=>  insert into batch1 values(40,'E',12);
+INSERT 0 1
+sy37=>  insert into batch1 values(41,'E',14);
+INSERT 0 1
+sy37=>  insert into batch1 values(42,'M',17);
+INSERT 0 1
+sy37=>  insert into batch1 values(43,'E',18);
+INSERT 0 1
+sy37=>  insert into batch1 values(44,'E',18);
+INSERT 0 1
+sy37=>  insert into batch1 values(45,'E',20);
+INSERT 0 1
+
+sy37=> select * from batch1;
+
+ bid | shift | tno 
+-----+-------+-----
+  31 | M     |  23
+  32 | E     |  63
+  33 | E     |  23
+  34 | E     |  21
+  35 | M     |  61
+  36 | M     |  62
+  37 | M     |  12
+  38 | M     |  22
+  39 | E     |  22
+  40 | E     |  12
+  41 | E     |  14
+  42 | M     |  17
+  43 | E     |  18
+  44 | E     |  18
+  45 | E     |  20
+(15 rows)
+======================================================================================================================================================
+
+5)MEMBER:-
+Question:-Write a trigger insert or update to handle constriant on table member.
+
+create trigger t1
+ before insert and update 
+on member
+ for each row
+ execute procedure fmem();
+CREATE TRIGGER
+
+create or replace function fmem() returns trigger as'
+begin
+  if TG_OP=''INSERT'' THEN
+if(new.mid<=0) then
+  raise exception E''\n invalid mid'';
+end if;
+perform *
+from member
+where mid=new.mid;
+if found then 
+raise exception E''\n invalid  mid'';
+end if;
+perform* 
+from plan
+where pid=new.pid;
+if not found then
+raise exception E''\n invalid pid'';
+end if;
+perform *
+from membership
+where msid=new.msid;
+if not found then
+raise exception E''\n invalid '';
+end if;
+perform * 
+from diet
+where did=new.did;
+if not found then
+raise exception E''\n invalid'';
+end if;
+perform * 
+from batch1
+where bid=new.bid;
+if not found then
+raise exception E''\n invalid'';
+end if;
+if(new.mbod>=current_date) then
+raise exception E''\n invalid birth date'';
+end if;
+if(new.gender not in(''f'',''m'')) then 
+raise exception E''\n invalid gender'';
+end if;
+if(new.mjd>=current_date) then 
+raise exception E''\n invalid mjd'';
+end if;
+end if;
+if TG_OP=''UPDATE'' THEN 
+if(new.mbod>=current_date) then
+raise exception E''\n invalid birth date'';
+end if;
+if(new.gender not in(''f'',''m'')) then 
+raise exception E''\n invalid gender'';
+end if;
+if(new.mjd>=current_date) then 
+raise exception E''\n invalid mjd'';
+end if;
+end if;
+return new;
+end;
+'language 'plpgsql';
+
+
+sy37=> insert into member values(51,'hfgh','05-04-2001','nashil','f','09-05-2000',1,41,02,31);
+INSERT 0 1
+sy37=> insert into member values(52,'meghana','05-05-2006','nashik','m','09-06-2005',4,44,04,32);
+INSERT 0 1
+sy37=> insert into member values(53,'rinku','02-03-2007','mumbai','m','08-06-2004',2,42,03,34);
+INSERT 0 1
+sy37=> insert into member values(54,'monika','01-03-2009','karachi','f','05-06-2004',3,43,05,37);
+INSERT 0 1
+sy37=> insert into member values(55,'moni','01-02-2009','karachi','f','05-06-2003',6,47,01,33);
+INSERT 0 1
+sy37=> insert into member values(56,'soni','01-02-2004','kara','m','08-07-2004',7,42,01,33);
+INSERT 0 1
+sy37=> insert into member values(57,'soni','04-02-2003','kaa','m','08-07-2003',6,46,05,35);
+INSERT 0 1
+sy37=> insert into member values(60,'rani','04-02-2003','nashik','m','08-07-2003',6,46,05,35);
+INSERT 0 1
+sy37=> insert into member values(61,'rani','04-02-2003','nashik','m','08-07-2003',6,46,05,35);
+INSERT 0 1
+sy37=> insert into member values(62,'rani','02-02-2003','nashik','f','08-07-2003',6,46,05,35);
+INSERT 0 1
+sy37=> insert into member values(63,'niki','02-02-2005','pune','f','04-04-2004',6,43,05,37);
+INSERT 0 1
+sy37=> insert into member values(64,'prikansi','02-02-2006','up','f','04-04-2004',6,43,05,37);
+INSERT 0 1
+sy37=> insert into member values(65,'prikansi','02-02-2006','up','f','04-04-2004',6,43,05,37);
+INSERT 0 1
+sy37=> insert into member values(51,'hfgh','05-04-2001','nashil','f','09-05-2000',1,41,02,31);
+ERROR:  
+ invalid  mid
+CONTEXT:  PL/pgSQL function fmem() line 11 at RAISE
+sy37=> insert into member values(66,'prikansi','02-02-2006','up','f','04-04-2004',6,43,05,43);
+INSERT 0 1
+
+sy37=> select * from member;
+
+ mid |  m_name  |    mbod    |  madd   | gender |    mjd     | pid | msid | did | bid 
+-----+----------+------------+---------+--------+------------+-----+------+-----+-----
+  52 | meghana  | 2006-05-05 | nashik  | m      | 2005-09-06 |   4 |   44 |   4 |  32
+  53 | rinku    | 2007-02-03 | mumbai  | m      | 2004-08-06 |   2 |   42 |   3 |  34
+  54 | monika   | 2009-01-03 | karachi | f      | 2004-05-06 |   3 |   43 |   5 |  37
+  55 | moni     | 2009-01-02 | karachi | f      | 2003-05-06 |   6 |   47 |   1 |  33
+  56 | soni     | 2004-01-02 | kara    | m      | 2004-08-07 |   7 |   42 |   1 |  33
+  57 | soni     | 2003-04-02 | kaa     | m      | 2003-08-07 |   6 |   46 |   5 |  35
+  58 | soniya   | 2006-04-02 | mumbai  | m      | 2013-07-07 |   5 |   43 |   5 |  35
+  59 | monikaa  | 2006-04-06 | mumbai  | f      | 2018-07-06 |   3 |   43 |   6 |  35
+  60 | rani     | 2003-04-02 | nashik  | m      | 2003-08-07 |   6 |   46 |   5 |  35
+  61 | rani     | 2003-04-02 | nashik  | m      | 2003-08-07 |   6 |   46 |   5 |  35
+  62 | rani     | 2003-02-02 | nashik  | f      | 2003-08-07 |   6 |   46 |   5 |  35
+  63 | niki     | 2005-02-02 | pune    | f      | 2004-04-04 |   6 |   43 |   5 |  37
+  64 | prikansi | 2006-02-02 | up      | f      | 2004-04-04 |   6 |   43 |   5 |  37
+  65 | prikansi | 2006-02-02 | up      | f      | 2004-04-04 |   6 |   43 |   5 |  37
+  51 | nikita   | 2001-05-04 | nashil  | f      | 2000-09-05 |   1 |   41 |   2 |  31
+  66 | prikansi | 2006-02-02 | up      | f      | 2004-04-04 |   6 |   43 |   5 |  43
+(16 rows)
+
+======================================================================================================================================================
+
+6)PAYMENT:-
+Question:-Write a trigger insert or update to handle constriant on table payment.
+
+ create trigger tpay
+ before insert or update
+ on payment
+ for each row
+ execute procedure fpay();
+CREATE TRIGGER
+
+ create or replace function fpay() returns trigger as'
+ begin
+   if TG_OP=''INSERT'' THEN
+ if(new.paud<=0) then
+   raise exception E''\n invalid did'';
+ end if;
+ perform *
+ from payment
+ where paud=new.paud;
+ if found then 
+ raise exception E''\n invalid  did'';
+ end if;
+ perform * 
+ from member 
+ where mid=new.mid;
+ if not found then 
+ raise exception E''\n not found'';
+ end if;
+ if (new.status not in(''paid'',''not paid'')) then 
+ raise exception E''\n invalid status'';
+ end if;
+ if(new.amt<0) then
+ raise exception E''\n invalid amount'';
+ end if;
+ if(new.ram<0) then 
+ raise exception E''\n invalid amount'';
+ end if;
+ if(new.pamt<0) then 
+ raise exception E''\n invalid amount'';
+ end if;
+ end if;
+ if TG_OP=''UPDATE'' THEN
+ if (new.status not in(''paid'',''not paid'')) then
+ raise exception E''\n invalid status'';
+ end if;
+ if(new.amt<0 and new.amt>10000000) then
+ raise exception E''\n invalid amount'';
+end if;
+ if(new.ram<0 and new.ram>20000) then 
+ raise exception E''\n invalid amount'';
+ end if;
+ if(new.pamt<=0) then 
+ raise exception E''\n invalid amount'';
+ end if;
+end if;
+ return new;
+ end;
+'language 'plpgsql';
+
+CREATE FUNCTION
+
+sy37=> insert into payment values(111,51,'paid',344,0,0);
+INSERT 0 1
+sy37=> insert into payment values(111,51,'nopaid',344,45,48);
+ERROR:  
+ invalid  did
+CONTEXT:  PL/pgSQL function fpay() line 11 at RAISE
+sy37=> insert into payment values(112,52,'nopaid',344,45,48);
+ERROR:  
+ invalid status
+CONTEXT:  PL/pgSQL function fpay() line 20 at RAISE
+sy37=> insert into payment values(112,52,'notpaid',344,45,48);
+ERROR:  
+ invalid status
+CONTEXT:  PL/pgSQL function fpay() line 20 at RAISE
+sy37=> insert into payment values(112,52,'not paid',344,45,48);
+INSERT 0 1
+sy37=> insert into payment values(113,53,'not paid',3478,345,238);
+INSERT 0 1
+sy37=> insert into payment values(114,54,'paid',3478,0,0);
+INSERT 0 1
+sy37=> insert into payment values(115,55,'paid',3342,0,0);
+INSERT 0 1
+sy37=> insert into payment values(116,56,'paid',3342,0,0);
+INSERT 0 1
+sy37=> insert into payment values(117,57,'not paid',334,45,34);
+INSERT 0 1
+sy37=> insert into payment values(118,58,'not paid',354,45,34);
+INSERT 0 1
+sy37=> insert into payment values(119,58,'not paid',354,45,34);
+INSERT 0 1
+sy37=> insert into payment values(120,58,'not paid',3324,45,34);
+INSERT 0 1
+sy37=> insert into payment values(121,52,'paid',3324,35,39);
+INSERT 0 1
+
+sy37=> select * from payment;
+
+ paud | mid |  status  | amt  | ram | pamt 
+------+-----+----------+------+-----+------
+  111 |  51 | paid     |  344 |   0 |    0
+  112 |  52 | not paid |  344 |  45 |   48
+  114 |  54 | paid     | 3478 |   0 |    0
+  115 |  55 | paid     | 3342 |   0 |    0
+  116 |  56 | paid     | 3342 |   0 |    0
+  117 |  57 | not paid |  334 |  45 |   34
+  113 |  53 | paid     | 3478 | 345 |  238
+  118 |  58 | not paid |  354 |  45 |   34
+  119 |  58 | not paid |  354 |  45 |   34
+  120 |  58 | not paid | 3324 |  45 |   34
+  121 |  52 | paid     | 3324 |  35 |   39
+(11 rows)
+======================================================================================================================================================
+
+7)REPORT:-
+
+Question:-Write a trigger insert or update to handle constriant on table report.
+
+ create trigger treport
+ before insert 
+ on report1
+ for each row
+ execute procedure freport();
+CREATE TRIGGER
+
+ create or replace function freport() returns trigger as'
+ begin
+  if TG_OP=''INSERT'' THEN
+ if(new.rid<=0) then
+   raise exception E''\n invalid did'';
+ end if;
+ perform *
+ from report1
+ where rid=new.rid;
+ if found then 
+ raise exception E''\n invalid  did'';
+ end if;
+ perform * 
+ from member 
+ where mid=new.mid;
+ if not found then 
+ raise exception E''\nnot found'';
+ end if;
+ end if;
+ return new;
+ end;
+ 'language 'plpgsql';
+
+CREATE FUNCTION:
+
+sy37=>  insert into report1 values(01,51,'good','notgood','ok');
+INSERT 0 1
+sy37=>  insert into report1 values(02,52,'notgood','ok','ok');
+INSERT 0 1
+sy37=>  insert into report1 values(03,53,'notgood','ok','good');
+INSERT 0 1
+sy37=>  insert into report1 values(04,54,'ok','ok','good');
+INSERT 0 1
+sy37=>  insert into report1 values(05,55,'notgood','good','ok');
+INSERT 0 1
+sy37=>  insert into report1 values(06,56,'notgood','notgood','ok');
+INSERT 0 1
+sy37=>  insert into report1 values(07,57,'notgood','notgood','good');
+INSERT 0 1
+sy37=> insert into report1 values(08,53,'notgood','good','good');
+INSERT 0 1
+sy37=> insert into report1 values(09,53,'notgood','ok','good');
+INSERT 0 1
+sy37=> insert into report1 values(10,53,'notgood','ok','good');
+INSERT 0 1
+sy37=> insert into report1 values(11,55,'notgood','ok','ok');
+INSERT 0 1 
+sy37=> insert into report1 values(01,51,'good','notgood','ok');
+ERROR:  
+ invalid  rid
+CONTEXT:  PL/pgSQL function freport() line 11 at RAISE
+
+sy37=> select * from report1;
+
+ rid | mid | sreport | dreport | areport 
+-----+-----+---------+---------+---------
+   1 |  51 | good    | notgood | ok
+   2 |  52 | notgood | ok      | ok
+   3 |  53 | notgood | ok      | good
+   4 |  54 | ok      | ok      | good
+   5 |  55 | notgood | good    | ok
+   6 |  56 | notgood | notgood | ok
+   7 |  57 | notgood | notgood | good
+   8 |  53 | notgood | good    | good
+   9 |  53 | notgood | ok      | good
+  10 |  53 | notgood | ok      | good
+  11 |  55 | notgood | ok      | ok
+(11 rows)
+
+======================================================================================================================================================
+
+
+

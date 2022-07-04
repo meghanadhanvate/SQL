@@ -1,0 +1,439 @@
+                                                           VIEW:
+======================================================================================================================================================
+
+1)create view which contain detials of member and plan.
+
+sy37=> create or replace view vmp as
+select mid,p.pid,duration,status
+from member m,plan p
+where m.pid=p.pid;
+
+CREATE VIEW
+
+sy37=> \d vmp;
+                         View "public.vmp"
+  Column  |         Type          | Collation | Nullable | Default 
+----------+-----------------------+-----------+----------+---------
+ mid      | integer               |           |          | 
+ pid      | integer               |           |          | 
+ duration | integer               |           |          | 
+ status   | character varying(15) |           |          | 
+
+sy37=>  select * from vmp;
+ mid | pid | duration | status 
+-----+-----+----------+--------
+  51 |   1 |       34 | yes
+  53 |   2 |       31 | no
+  59 |   3 |       36 | yes
+  54 |   3 |       36 | yes
+  52 |   4 |       37 | yes
+  58 |   5 |       37 | yes
+  65 |   6 |       37 | no
+  64 |   6 |       37 | no
+  63 |   6 |       37 | no
+  62 |   6 |       37 | no
+  61 |   6 |       37 | no
+  60 |   6 |       37 | no
+  57 |   6 |       37 | no
+  55 |   6 |       37 | no
+  56 |   7 |       36 | no
+(15 rows)
+======================================================================================================================================================
+2)create view which contain detials of member and membership.
+
+sy37=> create or replace view vms as
+select mid,ms.msid,mtype,fee
+from member m,membership ms
+where m.msid=ms.msid
+order by m.mid;
+
+CREATE VIEW
+
+sy37=> \d  vms;
+                      View "public.vms"
+ Column |       Type        | Collation | Nullable | Default 
+--------+-------------------+-----------+----------+---------
+ mid    | integer           |           |          | 
+ msid   | integer           |           |          | 
+ mtype  | character varying |           |          | 
+ fee    | integer           |           |          | 
+
+sy37=>  select * from vms;
+ mid | msid | mtype  |  fee  
+-----+------+--------+-------
+  51 |   41 | golden |  5876
+  52 |   44 | golden | 56773
+  53 |   42 | golden |  5453
+  54 |   43 | silver |  5633
+  55 |   47 | silver |   445
+  56 |   42 | golden |  5453
+  57 |   46 | silver |  4543
+  58 |   43 | silver |  5633
+  59 |   43 | silver |  5633
+  60 |   46 | silver |  4543
+  61 |   46 | silver |  4543
+  62 |   46 | silver |  4543
+  63 |   43 | silver |  5633
+  64 |   43 | silver |  5633
+  65 |   43 | silver |  5633
+(15 rows)
+=====================================================================================================================================================
+
+3)create view which contain details of member an diet.
+
+sy37=> create or replace view vmd as
+sy37-> select mid,d.did,duration
+sy37-> from member m,diet d
+sy37-> where m.did=d.did;
+
+CREATE VIEW
+
+sy37=> \d  vmd;
+                  View "public.vmd"
+  Column  |  Type   | Collation | Nullable | Default 
+----------+---------+-----------+----------+---------
+ mid      | integer |           |          | 
+ did      | integer |           |          | 
+ dur
+
+sy37=> select * from vmd;
+ mid | did | duration 
+-----+-----+----------
+  56 |   1 |       76
+  55 |   1 |       76
+  51 |   2 |       36
+  53 |   3 |      345
+  52 |   4 |       34
+  65 |   5 |      334
+  64 |   5 |      334
+  63 |   5 |      334
+  62 |   5 |      334
+  61 |   5 |      334
+  60 |   5 |      334
+  58 |   5 |      334
+  57 |   5 |      334
+  54 |   5 |      334
+  59 |   6 |      334
+(15 rows)
+======================================================================================================================================================
+4)create view which contain detials of member and plan.
+
+sy37=> create or replace view vmp2 as
+sy37-> select mid,p.pid,discount
+sy37-> from member m,plan p
+sy37-> where m.pid=p.pid;
+
+CREATE VIEW
+
+sy37=> \d  vmp2;
+                 View "public.vmp2"
+  Column  |  Type   | Collation | Nullable | Default 
+----------+---------+-----------+----------+---------
+ mid      | integer |           |          | 
+ pid      | integer |           |          | 
+ discount | integer |           |          | 
+
+sy37=> select * from vmp2;
+ mid | pid | discount 
+-----+-----+----------
+  51 |   1 |       45
+  53 |   2 |       44
+  59 |   3 |       44
+  54 |   3 |       44
+  52 |   4 |       44
+  58 |   5 |       74
+  65 |   6 |       74
+  64 |   6 |       74
+  63 |   6 |       74
+  62 |   6 |       74
+  61 |   6 |       74
+  60 |   6 |       74
+  57 |   6 |       74
+  55 |   6 |       74
+  56 |   7 |       24
+(15 rows)
+====================================================================================================================================================
+5)create view which contain detials of member and member.
+
+sy37=> create or replace view vmb as
+sy37-> select m.mid,b.bid,shift,tno
+sy37-> from member m,batch1 b
+sy37-> where m.bid=b.bid;
+
+CREATE VIEW
+
+sy37=> \d  vmb;
+                        View "public.vmb"
+ Column |         Type          | Collation | Nullable | Default 
+--------+-----------------------+-----------+----------+---------
+ mid    | integer               |           |          | 
+ bid    | integer               |           |          | 
+ shift  | character varying(10) |           |          | 
+ tno    | integer               |           |          | 
+
+sy37=> select * from vmb;
+
+ mid | bid | shift | tno 
+-----+-----+-------+-----
+  51 |  31 | M     |  23
+  52 |  32 | E     |  63
+  56 |  33 | E     |  23
+  55 |  33 | E     |  23
+  53 |  34 | E     |  21
+  62 |  35 | M     |  61
+  61 |  35 | M     |  61
+  60 |  35 | M     |  61
+  59 |  35 | M     |  61
+  58 |  35 | M     |  61
+  57 |  35 | M     |  61
+  65 |  37 | M     |  12
+  64 |  37 | M     |  12
+  63 |  37 | M     |  12
+  54 |  37 | M     |  12
+(15 rows)
+=====================================================================================================================================================
+6)create view which contain detials of member and report.
+
+sy37=> create or replace view vmr as
+select m.mid,r.rid,dreport,sreport
+from member m,report1 r
+where m.mid=r.mid
+order by m.mid;
+
+CREATE VIEW
+
+sy37=> \d  vmr;
+                        View "public.vmr"
+ Column  |         Type          | Collation | Nullable | Default 
+---------+-----------------------+-----------+----------+---------
+ mid     | integer               |           |          | 
+ rid     | integer               |           |          | 
+ dreport | character varying(20) |           |          | 
+ sreport | character varying(10) |           |          | 
+
+sy37=> select * from vmr;
+
+ mid | rid | dreport | sreport 
+-----+-----+---------+---------
+  51 |   1 | notgood | good
+  52 |   2 | ok      | notgood
+  53 |  10 | ok      | notgood
+  53 |   9 | ok      | notgood
+  53 |   3 | ok      | notgood
+  53 |   8 | good    | notgood
+  54 |   4 | ok      | ok
+  55 |  11 | ok      | notgood
+  55 |   5 | good    | notgood
+  56 |   6 | notgood | notgood
+  57 |   7 | notgood | notgood
+(11 rows)
+====================================================================================================================================================
+7)create view which contain detials of member and payment.
+
+sy37=> create or replace view vmpay as
+select m.mid,paud,status,amt,ram,pamt
+from member m,payment p
+where m.mid=p.mid;
+
+CREATE VIEW
+
+sy37=> \d  vmpay;
+                       View "public.vmpay"
+ Column |         Type          | Collation | Nullable | Default 
+--------+-----------------------+-----------+----------+---------
+ mid    | integer               |           |          | 
+ paud   | integer               |           |          | 
+ status | character varying(10) |           |          | 
+ amt    | integer               |           |          | 
+ ram    | integer               |           |          | 
+ pamt   | integer               |           |          | 
+
+sy37=> select * from vmpay;
+
+ mid | paud |  status  | amt  | ram | pamt 
+-----+------+----------+------+-----+------
+  51 |  111 | paid     |  344 |   0 |    0
+  52 |  112 | not paid |  344 |  45 |   48
+  54 |  114 | paid     | 3478 |   0 |    0
+  55 |  115 | paid     | 3342 |   0 |    0
+  56 |  116 | paid     | 3342 |   0 |    0
+  57 |  117 | not paid |  334 |  45 |   34
+  53 |  113 | paid     | 3478 | 345 |  238
+  58 |  118 | not paid |  354 |  45 |   34
+  58 |  119 | not paid |  354 |  45 |   34
+  58 |  120 | not paid | 3324 |  45 |   34
+  52 |  121 | paid     | 3324 |  35 |   39
+(11 rows)
+=================================================================================================================================================
+8)create view which contain detials of member and batch.
+
+sy37=> create or replace view vmb2 as
+select mid,b.bid,tno
+from member m,batch1 b
+where m.bid=b.bid;
+
+CREATE VIEW
+
+sy37=> \d  vmb2;
+                View "public.vmb2"
+ Column |  Type   | Collation | Nullable | Default 
+--------+---------+-----------+----------+---------
+ mid    | integer |           |          | 
+ bid    | integer |           |          | 
+ tno    | integer |           |          | 
+
+sy37=> select * from vmb2;
+ mid | bid | tno 
+-----+-----+-----
+  51 |  31 |  23
+  52 |  32 |  63
+  56 |  33 |  23
+  55 |  33 |  23
+  53 |  34 |  21
+  62 |  35 |  61
+  61 |  35 |  61
+  60 |  35 |  61
+  59 |  35 |  61
+  58 |  35 |  61
+  57 |  35 |  61
+  65 |  37 |  12
+  64 |  37 |  12
+  63 |  37 |  12
+  54 |  37 |  12
+(15 rows)
+================================================================================================================================================
+9)create view which contain detials of member and payment.
+
+sy37=> create or replace view v20 as
+select m.mid,paud,status
+from member m,payment pa
+where pa.mid=m.mid and status='paid';
+
+CREATE VIEW
+
+sy37=\d v20;
+                        View &quot;public.v20&quot;
+ Column |         Type          | Collation | Nullable | Default 
+--------+-----------------------+-----------+----------+---------
+ mid    | integer               |           |          | 
+ paud   | integer               |           |          | 
+ status | character varying(10) |           |          | 
+
+
+sy37=> select * from v20;
+ mid | paud | status 
+-----+------+--------
+  51 |  111 | paid
+  52 |  121 | paid
+  53 |  113 | paid
+  54 |  114 | paid
+  55 |  115 | paid
+  56 |  116 | paid
+(6 rows)
+
+=====================================================================================================================================================
+10)create view which contain detials of member and payment which status are not paid.
+
+sy37=> create or replace view v21 as
+select m.mid,paud,status
+from member m,payment pa
+where pa.mid=m.mid and status='not paid';
+
+CREATE VIEW
+
+sy37=> \d v21;
+                        View "public.v21"
+ Column |         Type          | Collation | Nullable | Default 
+--------+-----------------------+-----------+----------+---------
+ mid    | integer               |           |          | 
+ paud   | integer               |           |          | 
+ status | character varying(10) |           |          | 
+
+sy37=> select * from v21;
+ mid | paud |  status  
+-----+------+----------
+  52 |  112 | not paid
+  57 |  117 | not paid
+  58 |  120 | not paid
+  58 |  119 | not paid
+  58 |  118 | not paid
+(5 rows)
+====================================================================================================================================================
+11)create view which contain detials of member and diet.
+ 
+sy37=> create or replace view vmd2 as
+sy37-> select mid,d.did,d_name,duration
+sy37-> from member m,diet d
+sy37-> where m.did=d.did;
+
+CREATE VIEW
+
+sy37=> \d vmd2;
+                        View "public.vmd2"
+  Column  |         Type          | Collation | Nullable | Default 
+----------+-----------------------+-----------+----------+---------
+ mid      | integer               |           |          | 
+ did      | integer               |           |          | 
+ d_name   | character varying(10) |           |          | 
+ duration | integer               |           |          | 
+
+sy37=> select * from vmd2;
+
+ mid | did | d_name | duration 
+-----+-----+--------+----------
+  52 |   4 | gain   |       34
+  66 |   5 | loss   |      334
+  65 |   5 | loss   |      334
+  64 |   5 | loss   |      334
+  63 |   5 | loss   |      334
+  62 |   5 | loss   |      334
+  61 |   5 | loss   |      334
+  60 |   5 | loss   |      334
+  58 |   5 | loss   |      334
+  57 |   5 | loss   |      334
+  54 |   5 | loss   |      334
+  59 |   6 | loss   |      334
+  56 |   1 | loss   |       76
+  55 |   1 | loss   |       76
+  51 |   2 | shape  |       36
+  53 |   3 | shape  |      345
+(16 rows)
+=================================================================================================================================================
+12)create view which contain detials of member.
+
+sy37=> create or replace view vb as
+sy37-> select mid,m_name,mjd
+sy37-> from member;
+
+CREATE VIEW
+
+sy37=> \d vb;
+                        View "public.vb"
+ Column |         Type          | Collation | Nullable | Default 
+--------+-----------------------+-----------+----------+---------
+ mid    | integer               |           |          | 
+ m_name | character varying(15) |           |          | 
+ mjd    | date                  |           |          | 
+
+y37=> select * from vb;
+
+ mid |  m_name  |    mjd     
+-----+----------+------------
+  52 | meghana  | 2005-09-06
+  53 | rinku    | 2004-08-06
+  54 | monika   | 2004-05-06
+  55 | moni     | 2003-05-06
+  56 | soni     | 2004-08-07
+  57 | soni     | 2003-08-07
+  58 | soniya   | 2013-07-07
+  59 | monikaa  | 2018-07-06
+  60 | rani     | 2003-08-07
+  61 | rani     | 2003-08-07
+  62 | rani     | 2003-08-07
+  63 | niki     | 2004-04-04
+  64 | prikansi | 2004-04-04
+  65 | prikansi | 2004-04-04
+  51 | nikita   | 2000-09-05
+(15 rows)
+
+=====================================================================================================================================================

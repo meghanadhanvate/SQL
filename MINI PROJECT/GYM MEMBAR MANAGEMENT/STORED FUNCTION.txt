@@ -1,0 +1,308 @@
+                                                              STORE FUNCTION
+=================================================================================================================================================== 
+
+1)write a store function to accept batch id from user and display the number of member in given batch.
+
+create or replace function f1(int) returns text as'
+ declare
+         b alias for $1;
+         n int;
+ begin
+         select into n count(*)
+         from vmb
+         where b=bid;
+         return E''\n total number of member of batch'' ||b||''=''||n;
+ end;
+ 'language'plpgsql';
+
+CREATE FUNCTION
+
+sy37=> select f1(35);
+
+
+                  f1                  
+--------------------------------------
+                                     +
+  total number of member of batch35=3
+(1 row)
+=====================================================================================================================================================
+
+2)write a store function to find the maximum amount from payment.
+
+sy37=> create or replace function maxmt() returns text as'
+declare
+     amax payment.amt%type;
+begin
+     select into amax max(amt)
+     from payment;
+     return E''\n the maximum amount is=''||amax;
+end;
+'language 'plpgsql';
+CREATE FUNCTION
+sy37=> select maxmt();
+            maxmt            
+-----------------------------
+                            +
+  the maximum amount is=3478
+(1 row)
+===================================================================================================================================================
+
+3)write a store function to display the maximum duration of deit and display information of member.
+
+create or replace function ndurl() returns text as'
+declare
+             dur vmd%rowtype;
+             result text:='' '';
+begin
+        for dur in select *
+                from vmd  
+                where duration=(select max(duration) from vmd)
+        loop
+                result:=result||E''\n mid did duration'';
+                result:=result||E''\n ''|| dur.mid ||'' ''|| dur.did ||'' ''|| dur.duration;
+        end loop;
+return result;
+end;
+'language'plpgsql';
+
+CREATE FUNCTION
+
+sy37=> select ndurl();
+
+       ndurl       
+-------------------
+                  +
+  mid did duration+
+  53 3 345
+(1 row)
+=====================================================================================================================================================
+
+4)write a store function to  the status as not paid user and display total amount not paid from payment.
+
+create or replace function ticka(varchar) returns text as'
+declare
+        d alias for $1;
+        tot payment.amt% type;
+begin 
+         select into tot sum(amt)
+         from payment
+         where status=d;
+         return E''\n the total amount of payment which have status''|| d ||''=''|| tot;
+end;
+'language'plpgsql';
+
+
+ select ticka('not paid');
+
+                            ticka                            
+-------------------------------------------------------------
+                                                            +
+  the total amount of payment which have statusnot paid=4156
+(1 row)
+=====================================================================================================================================================
+
+5)write a store function to accept member name and update the status of given member name.
+
+create or replace function mp(varchar) returns text as'
+declare
+        num alias for $1;
+begin 
+        update payment
+        set status=''paid''
+        where status=''not paid'' and  mid=(select mid from member where m_name=num);
+        return E''\n status update succesfully'';
+ end;
+'language'plpgsql';
+
+CREATE FUNCTION
+
+sy37=> select mp('soniya');
+
+             mp             
+----------------------------
+                           +
+  status update succesfully
+(1 row)
+
+sy37=> select * from payment;
+
+ paud | mid |  status  | amt  | ram | pamt 
+------+-----+----------+------+-----+------
+  111 |  51 | paid     |  344 |   0 |    0
+  112 |  52 | not paid |  344 |  45 |   48
+  114 |  54 | paid     | 3478 |   0 |    0
+  115 |  55 | paid     | 3342 |   0 |    0
+  116 |  56 | paid     | 3342 |   0 |    0
+  117 |  57 | not paid |  334 |  45 |   34
+  113 |  53 | paid     | 3478 | 345 |  238
+  121 |  52 | paid     | 3324 |  35 |   39
+  118 |  58 | paid     |  354 |  45 |   34
+  119 |  58 | paid     |  354 |  45 |   34
+  120 |  58 | paid     | 3324 |  45 |   34
+(11 rows)
+=====================================================================================================================================================
+
+6)write a store function to accept date and display the details of member
+
+ create or replace function br(date) returns text as'
+ declare
+        b alias for $1;
+       e vb%rowtype;
+        result text :='' '';
+  begin
+       for e in select *
+               from vb   
+               where mjd=b
+       loop
+               result:=result||E''\n mid mname'';
+               result:=result||E''\n ''||e.mid||'' ''||e.m_name;
+       end loop;
+      return result;
+ end;
+ 'language'plpgsql';
+
+CREATE FUNCTION
+
+sy37=> select br('08-07-2003');
+
+     br     
+------------
+           +
+  mid mname+
+  57 soni  +
+  mid mname+
+  60 rani  +
+  mid mname+
+  61 rani  +
+  mid mname+
+  62 rani
+(1 row)
+==============================================================================================================================================
+
+7)write a store function to accept shift from user and display details of batch of allocated shift.
+
+create or replace function ban(varchar) returns text as'
+declare 
+          bn alias for $1;
+          b batch1%rowtype;
+          result text:='' '';
+begin
+         result:=E''\n bid tno'';
+        for b in select *
+            from batch1
+            where shift=bn
+ loop
+               result:=result||E''\n ''||b.bid||'' ''||b.tno;
+end loop;            
+return result;
+end;
+'language'plpgsql';
+
+CREATE FUNCTION
+
+sy37=> select ban('M');
+   ban    
+----------
+         +
+  bid tno+
+  31 23  +
+  35 61  +
+  36 62  +
+  37 12  +
+  38 22  +
+  42 17
+(1 row)
+=================================================================================================================================================
+
+8)write a store function to accept the date and display the details of member which join date is less and equal to given date.
+
+ create or replace function bar(date) returns text as'
+ declare
+        b alias for $1;
+       e vb%rowtype;
+        result text;
+  begin
+          result:=E''\n mid m_name'';
+       for e in select *
+               from vb   
+               where mjd<=b
+         loop
+               
+               result:=result||E''\n ''||e.mid||'' ''||e.m_name;
+       end loop;
+      return result;
+ end;
+ 'language'plpgsql';
+
+CREATE FUNCTION
+sy37=>  select bar('07-07-2013');
+     bar      
+--------------
+             +
+  mid m_name +
+  52 meghana +
+  53 rinku   +
+  54 monika  +
+  55 moni    +
+  56 soni    +
+  57 soni    +
+  58 soniya  +
+  60 rani    +
+  61 rani    +
+  62 rani    +
+  63 niki    +
+  64 prikansi+
+  65 prikansi+
+  51 nikita  +
+  66 prikansi
+(1 row)
+
+===================================================================================================================================================
+
+9)write a store function to find the average amount of payment.
+
+create or replace function maxt() returns text as'
+declare
+     amax payment.amt%type;
+begin
+     select into amax avg(amt)
+     from payment;
+     return E''\n the average amount is=''||amax;
+end;
+'language 'plpgsql';
+
+CREATE FUNCTION
+
+sy37=> select maxt();
+
+            maxt             
+-----------------------------
+                            +
+  the average amount is=2002
+(1 row)
+===================================================================================================================================================
+
+10)write a store function to find the total number of trainer from all batches.
+
+create or replace function tic() returns text as'
+declare
+        tot batch1.tno%type;
+begin 
+         select into tot sum(tno)
+         from batch1;
+         return E''\n the total number of trainer in gym=''|| tot;
+end;
+'language'plpgsql';
+
+CREATE FUNCTION
+
+sy37=> select tic();
+
+                   tic                   
+-----------------------------------------
+                                        +
+  the total number of trainer in gym=408
+(1 row)
+
+
+
